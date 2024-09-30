@@ -1,0 +1,250 @@
+<?php
+
+if (!defined('BASEPATH'))
+    exit('No direct script access allowed');
+
+class SupplierPricing extends BP_Controller {
+
+    public function __construct() {
+        parent::__construct();
+
+        $is_logged_in = $this->session->userdata('is_logged_in');
+
+        if (!isset($is_logged_in) || $is_logged_in != true) {
+            redirect(base_url(), 'refresh');
+        }
+
+        // if ($this->MUsers->isValidUser($this->session->userdata('userid'), 881215) != 1) {// 881100 prodcat Access
+        //     redirect('Catalog/prodcat', 'refresh');
+        // }
+    }
+
+    function index() { 
+
+        $this->title = "MI Technologiesinc - Supplier Pricing";
+        $this->description = "Supplier Pricing";
+        $this->css = array('form.css', 'fluid.css', 'table.css', 'jqueryui/redmond/jquery-ui-1.8.21.custom.css', 'jqgrid/ui.jqgrid.css', 'menu.css',);
+
+        // Define custom javascript
+        $this->javascript = array('jqueryui/ui/jquery-ui-1.8.21.custom.js', 'jqgrid/i18n/grid.locale-en.js', 'jqgrid/jquery.jqGrid.min.js', 'jqgrid/jquery.jqGrid.fluid.js', 'site.js');
+
+        $this->load->library('Layout');
+        $menu = new Layout;
+
+        $data = array( 
+            'menu' => $menu->show_menu($this->MUsers->getUserFullName($this->session->userdata('userid'))),
+            'from' => '/tools/supplierpricing',
+            'caption' => 'Supplier Pricing',
+            'export' => 'SupplierPricing',
+            'sort' => 'asc',
+            'categoria' => $this->MCatalog->fillCategoryProducto(),
+            'supplier' => $this->MCatalog->fillSuppliersDrop(),
+            'selectData' => Array(0 => "All", 1 => "Yes", 2 => "No"),
+            'baseUrl' => base_url(),
+        );
+
+        $data['colNames'] = "['ID','SupplierID','SupplierName','MITSKU','SupplierSKU','Description','UnitCost','DeliveryTimeDays','DropShip?','SKUEnabled','Category']";
+
+        $data['colModel'] = "[
+                {name:'ID',index:'ID', width:50, align:'center', sorttype: 'int', hidden: true},
+                {name:'SupplierID',index:'SupplierID', width:50, align:'center', sorttype: 'int', hidden: true},
+                {name:'SupplierName',index:'SupplierName', width:45, align:'left'},
+                {name:'MITSKU',index:'MITSKU', width:45, align:'center', sorttype: 'int'},
+                {name:'SupplierSKU',index:'SupplierSKU', width:45, align:'center', sorttype: 'int'},  
+                {name:'Description',index:'Description', width:100, align:'left'},
+                {name:'UnitCost',index:'UnitCost', width:45, align:'center', editable:true, sorttype: 'int',editrules:{number:true}}, 
+                {name:'DeliveryTimeDays',index:'DeliveryTimeDays', width:45, align:'center', editable:true, sorttype: 'int',editrules:{number:true}}, 
+                {name:'DropShip',index:'DropShip', width:45, align:'center', editable:true, formatter: checkboxFormatter, edittype: 'checkbox'}, 
+                {name:'Enabled',index:'Enabled', width:45, align:'center', editable:true, formatter: checkboxFormatter, edittype: 'checkbox'}, 
+                {name:'Category',index:'Category', width:100, align:'left'}, 
+            ]";
+            
+        $this->build_content($data);
+        $this->render_page();
+    }
+
+    function getData() {
+
+        $page = isset($_REQUEST['page']) ? $_REQUEST['page'] : 1; // get the requested page
+        $limit = isset($_REQUEST['rows']) ? $_REQUEST['rows'] : 10; // get how many rows we want to have into the gri
+        $sidx = $_GET['sidx']; // get index row - i.e. user click to sort
+        $sord = $_GET['sord'];
+        //if(!$sidx) $sidx =1;
+        
+        $search = $this->input->get('ds');
+        $catego = $this->input->get('ca');
+        $suppli = $this->input->get('su');
+        $enable = $this->input->get('en');
+
+        //Select utilizado para realizar el conteo del numero de registros devueltos por la consulta.
+        $selectCount = 'SELECT COUNT(*) AS rowNum';
+
+        //Select General con los campos necesarios para la vista
+        $select = " SELECT A.ID, 
+                    A.SupplierID, 
+                    A.SupplierName,
+                    A.MITSKU,
+                    A.SupplierSKU,
+                    A.Description, 
+                    A.UnitCost, 
+                    A.DeliveryTimeDays, 
+                    A.DropShip, 
+                    A.Enabled, 
+                    A.Category";
+
+        $selectSlice = "SELECT ID
+                    ,SupplierID
+                    ,SupplierName
+                    ,MITSKU
+                    ,SupplierSKU
+                    ,Description
+                    ,UnitCost
+                    ,DeliveryTimeDays
+                    ,DropShip
+                    ,Enabled
+                    ,Category ";
+
+        $from =  " FROM (
+                    SELECT SUP.[ID]
+                        ,SUP.[SupplierID]
+                        ,SINF.[SupplierName]
+                        ,SUP.[ProductCatalogId] AS 'MITSKU'
+                        ,SUP.[SupplierSKU] AS 'SupplierSKU'
+                        ,PC.[Name] AS 'Description'
+                        ,SUP.[UnitCost] AS 'UnitCost'
+                        ,SUP.[DeliveryTimeDays] AS 'DeliveryTimeDays'
+                        ,SUP.[DropShip] AS 'DropShip'
+                        ,SUP.[Enabled] AS 'Enabled'
+                        ,CAT.[Name] AS 'Category'  
+                    FROM [Inventory].[dbo].[Suppliers] AS SUP
+                    LEFT OUTER JOIN [Inventory].[dbo].[SupplierInfo] AS SINF ON (SUP.[SupplierID] = SINF.[SupplierId]) 
+                    LEFT OUTER JOIN [Inventory].[dbo].[ProductCatalog] AS PC ON (SUP.[ProductCatalogId] = PC.[ID]) 
+                    LEFT OUTER JOIN [Inventory].[dbo].[Categories] AS CAT ON (PC.[CategoryID] = CAT.[ID]) 
+                ) A";
+
+        $where ='';
+        $wherefields = array('A.[MITSKU]','A.[SupplierSKU]','A.[Category]','A.[SupplierName]','A.[Description]');
+
+        //Obtenemos todos los nombres de campos de la tabla productCatalog
+      //  $fields = $this->MCommon->getAllfields($table);
+        //creamos el where concatenando todos los nombres de campos y las palabras de busqueda
+        $where .= $this->MCommon->concatAllWerefields($wherefields, $search);
+
+        $orderby = " ORDER BY $sidx $sord ";
+
+        if($catego)
+        { $where .= " and (A.[Category] = '{$catego}') "; }
+
+        if($suppli)
+        { $where .= " and (A.[SupplierName] = '{$suppli}') "; }
+
+        if($enable > 0)
+        {   
+            if($enable == 1)
+                { $where .= " and (A.[Enabled] = {$enable})" ; }
+            else
+                { $where .= " and (A.[Enabled] = 0)" ; }  
+        }
+
+        $SQL = "{$selectCount}{$from}{$where}";
+        $result = $this->MCommon->getOneRecord($SQL);
+        //print_r($SQL);
+
+        $count = $result['rowNum'];
+
+        if ($count > 0) {
+            $total_pages = ceil($count / $limit);
+        } else {
+            $total_pages = 0;
+        }
+        if ($page > $total_pages)
+            $page = $total_pages;
+
+        $start = $limit * $page - $limit; // do not put $limit*($page - 1)
+        $start = ($start < 0) ? 0 : $start;
+        $finish = $start + $limit;
+
+        $SQL = "WITH mytable AS ($select , ROW_NUMBER() OVER (ORDER BY $sidx $sord) AS RowNumber
+                    {$from}{$where})
+               {$selectSlice}, RowNumber
+               FROM mytable
+                WHERE RowNumber BETWEEN {$start} AND {$finish}";
+
+        //print_r($SQL);
+        //echo $SQL;
+        $result = $this->MCommon->getSomeRecords($SQL); 
+       
+
+        $responce = new stdClass();
+        $responce->page = $page;
+        $responce->total = $total_pages;
+        $responce->records = $count;
+
+        $i = 0;
+        foreach ($result as $row) {
+            $responce->rows[$i]['id'] = $row['ID'];
+            $responce->rows[$i]['cell'] = array($row['ID'],
+                $row['SupplierID'] = utf8_encode($row['SupplierID']),
+                $row['SupplierName'] = utf8_encode($row['SupplierName']),
+                $row['MITSKU'] = utf8_encode($row['MITSKU']),
+                $row['SupplierSKU'] = utf8_encode($row['SupplierSKU']),
+                $row['Description'] = utf8_encode($row['Description']),
+                $row['UnitCost'] = utf8_encode($row['UnitCost']),
+                $row['DeliveryTimeDays'] = utf8_encode($row['DeliveryTimeDays']),
+                $row['DropShip'] = utf8_encode($row['DropShip']),
+                $row['Enabled'] = utf8_encode($row['Enabled']),
+                $row['Category'] = utf8_encode($row['Category']),
+            );
+            $i++;
+        }
+        echo json_encode($responce);
+    }
+
+    /*
+     * CSV Export
+     */
+
+
+    function editSupplier()
+    {
+        $sup = $this->input->post('id');
+
+        if (isset($_POST['UnitCost'])) {
+                $UnitCost = $_POST['UnitCost'];
+                $SQL = "UPDATE [Inventory].[dbo].[Suppliers] SET UnitCost={$UnitCost} WHERE ID={$sup}";
+        }
+
+        if (isset($_POST['DeliveryTimeDays'])) {
+                $DeliveryTimeDays = $_POST['DeliveryTimeDays'];
+                $SQL = "UPDATE [Inventory].[dbo].[Suppliers] SET DeliveryTimeDays='{$DeliveryTimeDays}' WHERE ID={$sup}";
+        }
+
+        if (isset($_POST['checkbox'])) {
+               $name = ($_POST['checkbox']);
+               $value = ($_POST['value']);
+
+               $value = ($_POST['value'] === 'true') ? 1:0;
+
+               $SQL = "UPDATE [Inventory].[dbo].[Suppliers] set $name='{$value}' where ID={$sup}";
+          }
+          //print_r($SQL);
+        $this->MCommon->saveRecord($SQL,'Inventory');
+    }
+
+    function csvExport($name) {
+
+        header('Content-type: application/vnd.ms-excel');
+        header("Content-Disposition: attachment; filename=" . $name . '_' . date("D-M-j") . ".xls");
+        header("Pragma: no-cache");
+
+        $buffer = $_POST['csvBuffer'];
+
+        try {
+            echo $buffer;
+        } catch (Exception $e) {
+            
+        }
+    }
+}
+
+?>

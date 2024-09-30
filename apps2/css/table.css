@@ -1,0 +1,52 @@
+@page { margin: 0.79in }
+P { margin-top: 0px;
+    margin-bottom: 0px; }
+-->
+.skudata
+{
+    font-family:"Trebuchet MS", Arial, Helvetica, sans-serif;
+    border-collapse:collapse;
+    margin-top: 40px;
+    margin-bottom:40px;
+    text-align: center;
+}
+
+.skudata td, .skudata th
+{
+    font-size:1.1em;
+    border:1px dotted #A5AEC5;
+    padding:0px 7px 2px 7px;
+}
+
+.skudata td{
+    color:#002952;
+    text-align: center;
+}
+
+.skudata th
+{
+    font-size:1.1em;
+    text-align:left;
+    padding-top:5px;
+    padding-bottom:4px;
+    background-color:#B8CDFF;
+    color:#002952;
+    text-align: center;
+}
+
+.skudata tr.alt td
+{
+    color:#002952;
+    background-color:#DBE6FF;
+    text-align: center;
+    text-shadow: 0 1px 0 white;
+}
+
+.skudata td.uno
+{
+    font-weight: bold;
+}
+
+
+
+

@@ -1,0 +1,28 @@
+#grid_wrapper
+{
+    padding: 1%;
+    width:90%;
+}
+.clear { clear:both; }
+.floatLeft { float:left; }
+.floatRight { float:right; }
+
+/* === Additions to jQuery UI Theme === */
+.ui-state-highlight
+{
+    font-size:11px;
+}
+
+#grid_wrapper_tab
+{
+    padding: 1%;
+    width:70%;
+    margin-left: 12%;
+}
+
+#grid_container
+{
+    width: 95%;
+    margin:0 auto 0 auto;
+    height: 90%;
+}

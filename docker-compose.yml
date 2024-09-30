@@ -1,0 +1,10 @@
+services:
+  apache:
+    build: .
+    container_name: apps2_project-apache
+    ports:
+      - '8082:80' # Mapea el puerto 80 del contenedor al puerto 8082 del host
+    volumes:
+      - ./apps2:/var/www/html # Monta el directorio local ./apps2 en /var/www/html en el contenedor
+    environment:
+      - APACHE_DOCUMENT_ROOT=/var/www/html

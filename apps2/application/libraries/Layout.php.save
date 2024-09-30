@@ -1,0 +1,73 @@
+<?php
+
+class Layout {
+
+    function show_menu($UserName) {
+        $obj = & get_instance();
+        $obj->load->helper('url');
+
+        $menu =' <ul class="menuH decor1"> ';
+        $menu .='   <li>';
+        $menu .='       <a class="arrow">Dashboard</a> ';
+        $menu .='       <div class = "sub">';
+        $menu .='           <ul>';
+        $menu .='               <li>';
+        $menu .='                   <a href = "' . base_url() . 'index.php/dashboard/sales/" target = "_self">Sales Reports</a>';
+        $menu .='               </li>';
+        $menu .='               <li>';
+        $menu .='                   <a href = "' . base_url() . 'index.php/dashboard/dropship/" target = "_self">Dropship Reports</a>';
+        $menu .='               </li>';
+        $menu .='               <li>';
+        $menu .='                   <a href = "' . base_url() . 'index.php/dashboard/csr/" target = "_self">Customer Service</a>';
+        $menu .='               </li>';
+        $menu .='           </ul>';
+        $menu .='           <div class = "btm-bg"></div>';
+        $menu .='       </div>';
+        $menu .='   </li>';
+        $menu .='   <li>';
+        $menu .='       <a class="arrow">Channel Management</a> ';
+        $menu .='       <div class = "sub">';
+        $menu .='           <ul>';
+        $menu .='               <li>';
+        $menu .='                   <a href = "' . base_url() . 'index.php/tools/amazonfba/" target = "_self">Amazon FBA Shipments</a>';
+        $menu .='               </li>';
+        $menu .='               <li>';
+        $menu .='                   <a href = "' . base_url() . 'index.php/Reports/asinlist/" target = "_self">ASIN List</a>';
+        $menu .='               </li>';
+        $menu .='               <li>';
+        $menu .='                   <a href = "' . base_url() . 'index.php/tools/datamining/" target = "_self">Channel Data Mining</a>';
+        $menu .='               </li>';
+        $menu .='               <li>';
+        $menu .='                   <a href = "' . base_url() . 'index.php/tools/amazonflooroverrides/" target = "_self">Amazon Floor Overrides</a>';
+        $menu .='               </li>';
+        $menu .='               <li>';
+        $menu .='                   <a href = "' . base_url() . 'index.php/tools/youtubevideos/" target = "_self">Video Management</a>';
+        $menu .='               </li>';	
+        $menu .='               <li>';
+        $menu .='                   <a href = "' . base_url() . 'index.php/MercadoLibre/mercadolibre" target = "_self">MercadoLibre</a>';
+        $menu .='               </li>'; 
+        $menu .='               <li>';
+        $menu .='                   <a href = "' . base_url() . 'index.php/Amazon/searchdata/" target = "_self">Search Data</a>';
+        $menu .='               </li>'; 
+        $menu .='               <li>';
+        $menu .='                   <a href = "' . base_url() . 'index.php/Amazon/searchdatagrid/" target = "_self">Search Data Grid</a>';
+        $menu .='               </li>'; 
+        $menu .='               <li>';
+        $menu .='                   <a class="arrow">Marketplace Feed Manager</a>';
+        $menu .='                       <ul>';
+        $menu .='                           <li>';
+        $menu .='                               <a href = "' . base_url() . 'index.php/tools/marketplace/" target = "_self">Live Feed</a>';
+        $menu .='                           </li>';
+        $menu .='                           <li>';
+        $menu .='                               <a href = "' . base_url() . 'index.php/tools/template/" target = "_self">Template Manager</a>';
+        $menu .='                           </li>';
+        $menu .='                       </ul>';
+        $menu .='               </li>';
+        $menu .='               <li>';
+        $menu .='                   <a href = "' . base_url() . 'index.php/Amazon/amazoninv/" target = "_self">Amazon Inv & Price Feed</a>';
+        $menu .='               </li>';
+        $menu .='               <li>';
+        $menu .='                   <a href = "' . base_url() . 'index.php/Amazon/amazonforce/" target = "_self">Amazon Force Disactivate</a>';
+        $menu .='               </li>';
+        $menu .='               <li>';
+        $menu .='                   <a href = "' . base_url() . 'index.php/Amazon/amazonasinnuker/" target = "_self">Amazon Asin Nuker</a>';

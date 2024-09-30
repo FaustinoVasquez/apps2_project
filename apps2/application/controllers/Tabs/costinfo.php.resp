@@ -1,0 +1,290 @@
+<?php
+
+if (!defined('BASEPATH')) {
+	exit('No direct script access allowed');
+}
+
+class Costinfo extends BP_Controller {
+
+	public function __construct() {
+		parent::__construct();
+
+		$is_logged_in = $this->session->userdata('is_logged_in');
+
+		if (!isset($is_logged_in) || $is_logged_in != true) {
+			redirect(base_url(), 'refresh');
+		}
+	}
+
+	function index() {
+
+		$this->title       = "MI Technologiesinc - Cost Info";
+		$this->description = " Cost Info";
+		// Define custom CSS
+		$this->css = array('menu.css', 'form.css', 'fluid.css', 'table.css', 'jqueryui/redmond/jquery-ui-1.8.21.custom.css', 'jqgrid/ui.jqgrid.css');
+		// Define custom javascript
+		$this->javascript = array('jqueryui/ui/jquery-ui-1.8.21.custom.js', 'jqgrid/i18n/grid.locale-en.js', 'jqgrid/jquery.jqGrid.min.js', 'jqgrid/jquery.jqGrid.fluid.js', 'site.js');
+		$this->hasNav     = False;
+
+		$data['sku']     = $this->uri->segment(3);
+		$data['cat']     = $this->MCatalog->getCategoryId($data['sku']);
+		$data['title']   = 'Cost Info';//Page Title
+		$data['caption'] = 'Cost Info';
+		$data['from']    = '/Tabs/costinfo/';
+
+		//Cargamos la libreria comumn
+		$this->load->library('common');
+
+		//--IF CATEGORY = '60' - "Lamp Housing Kits - Front Projection" USE THIS QUERY
+		switch ($data['cat']) {
+			case '60':
+				$columns = array(
+					'LowestCost'      => array('colName'      => 'LowestCost', 'colModel'      => "{name:'LowestCost',index:'LowestCost', width:60, align:'center' }"),
+					'AvgPOCost'       => array('colName'       => 'AvgPOCost', 'colModel'       => "{name:'AvgPOCost',index:'AvgPOCost', width:60, align:'center'}"),
+					'MITSKU'          => array('colName'          => 'MITSKU', 'colModel'          => "{name:'MITSKU',index:'MITSKU', width:60, align:'center'}"),
+					'MITCost'         => array('colName'         => 'MITCost', 'colModel'         => "{name:'MITCost',index:'MITCost', width:60, align:'center'}"),
+					'MgtSKU'          => array('colName'          => 'MgtSKU', 'colModel'          => "{name:'MgtSKU',index:'MgtSKU', width:60, align:'center'}"),
+					'MgtCost'         => array('colName'         => 'MgtCost', 'colModel'         => "{name:'MgtCost',index:'MgtCost', width:60, align:'center'}"),
+					'GBSKU'           => array('colName'           => 'GBSKU', 'colModel'           => "{name:'GBSKU',index:'GBSKU', width:60, align:'center'}"),
+					'GBCost'          => array('colName'          => 'GBCost', 'colModel'          => "{name:'GBCost',index:'GBCost', width:60, align:'center'}"),
+					'STCSKU'          => array('colName'          => 'STCSKU', 'colModel'          => "{name:'STCSKU',index:'STCSKU', width:60, align:'center'}"),
+					'STCCost'         => array('colName'         => 'STCCost', 'colModel'         => "{name:'STCCost',index:'STCCost', width:60, align:'center'}"),
+					'KWSKU'           => array('colName'           => 'KWSKU', 'colModel'           => "{name:'KWSKU',index:'KWSKU', width:60, align:'center'}"),
+					'KWCost'          => array('colName'          => 'KWCost', 'colModel'          => "{name:'KWCost',index:'KWCost', width:60, align:'center'}"),
+					'LeaderSKU'       => array('colName'       => 'LeaderSKU', 'colModel'       => "{name:'LeaderSKU',index:'LeaderSKU', width:60, align:'center'}"),
+					'LeaderCost'      => array('colName'      => 'LeaderCost', 'colModel'      => "{name:'LeaderCost',index:'LeaderCost', width:60, align:'center'}"),
+					'YitaSKU'         => array('colName'         => 'YitaSKU', 'colModel'         => "{name:'YitaSKU',index:'YitaSKU', width:60, align:'center'}"),
+					'YitaCost'        => array('colName'        => 'YitaCost', 'colModel'        => "{name:'YitaCost',index:'YitaCost', width:60, align:'center'}"),
+					'FYVSKU'          => array('colName'          => 'FYVSKU', 'colModel'          => "{name:'FYVSKU',index:'FYVSKU', width:60, align:'center'}"),
+					'FYVCost'         => array('colName'         => 'FYVCost', 'colModel'         => "{name:'FYVCost',index:'FYVCost', width:60, align:'center'}"),
+					'LampsChoiceSKU'  => array('colName'  => 'LampsChoiceSKU', 'colModel'  => "{name:'LampsChoiceSKU',index:'LampsChoiceSKU', width:60, align:'center'}"),
+					'LampsChoiceCost' => array('colName' => 'LampsChoiceCost', 'colModel' => "{name:'LampsChoiceCost',index:'LampsChoiceCost', width:60, align:'center'}"),
+				);
+				break;
+			case '24':
+				//--IF CATEGORY = '24' - "GENERIC FP LAMPS WITH HOUSING" USE THIS QUERY
+				$columns = array(
+					'LowestCost'    => array('colName'    => 'LowestCost', 'colModel'    => "{name:'LowestCost',index:'LowestCost', width:60, align:'center' }"),
+					'AvgPOCost'     => array('colName'     => 'AvgPOCost', 'colModel'     => "{name:'AvgPOCost',index:'AvgPOCost', width:60, align:'center'}"),
+					'MITSKU'        => array('colName'        => 'MITSKU', 'colModel'        => "{name:'MITSKU',index:'MITSKU', width:60, align:'center'}"),
+					'MITCost'       => array('colName'       => 'MITCost', 'colModel'       => "{name:'MITCost',index:'MITCost', width:60, align:'center'}"),
+					'ArcliteSKU'    => array('colName'    => 'ArcliteSKU', 'colModel'    => "{name:'ArcliteSKU',index:'ArcliteSKU', width:60, align:'center'}"),
+					'ArcliteCost'   => array('colName'   => 'ArcliteCost', 'colModel'   => "{name:'ArcliteCost',index:'ArcliteCost', width:60, align:'center'}"),
+					'GlorySKU'      => array('colName'      => 'GlorySKU', 'colModel'      => "{name:'GlorySKU',index:'GlorySKU', width:60, align:'center'}"),
+					'GloryCost'     => array('colName'     => 'GloryCost', 'colModel'     => "{name:'GloryCost',index:'GloryCost', width:60, align:'center'}"),
+					'CLPSKU'        => array('colName'        => 'CLPSKU', 'colModel'        => "{name:'CLPSKU',index:'CLPSKU', width:60, align:'center'}"),
+					'CLPCost'       => array('colName'       => 'CLPCost', 'colModel'       => "{name:'CLPCost',index:'CLPCost', width:60, align:'center'}"),
+					'GBSKU'         => array('colName'         => 'GBSKU', 'colModel'         => "{name:'GBSKU',index:'GBSKU', width:60, align:'center'}"),
+					'GBCost'        => array('colName'        => 'GBCost', 'colModel'        => "{name:'GBCost',index:'GBCost', width:60, align:'center'}"),
+					'LeaderSKU'     => array('colName'     => 'LeaderSKU', 'colModel'     => "{name:'LeaderSKU',index:'LeaderSKU', width:60, align:'center'}"),
+					'LeaderCost'    => array('colName'    => 'LeaderCost', 'colModel'    => "{name:'LeaderCost',index:'LeaderCost', width:60, align:'center'}"),
+					'YitaSKU'       => array('colName'       => 'YitaSKU', 'colModel'       => "{name:'YitaSKU',index:'YitaSKU', width:60, align:'center'}"),
+					'YitaCost'      => array('colName'      => 'YitaCost', 'colModel'      => "{name:'YitaCost',index:'YitaCost', width:60, align:'center'}"),
+					'FBALowestCost' => array('colName' => 'FBALowestCost', 'colModel' => "{name:'FBALowestCost',index:'FBALowestCost', width:60, align:'center'}"),
+					'FBMLowestCost' => array('colName' => 'FBMLowestCost', 'colModel' => "{name:'FBMLowestCost',index:'FBMLowestCost', width:60, align:'center'}"),
+				);
+				break;
+
+			default:
+				//--ALL OTHER CATEGORIES
+				//
+				$columns = array(
+					'LastQuotedPrice' => array('colName' => 'LastQuotedPrice', 'colModel' => "{name:'LastQuotedPrice',index:'LastQuotedPrice', width:60, align:'center' }"),
+					'AvgPOCost'       => array('colName'       => 'AvgPOCost', 'colModel'       => "{name:'AvgPOCost',index:'AvgPOCost', width:60, align:'center'}"),
+					'FBALowestCost'   => array('colName'   => 'FBALowestCost', 'colModel'   => "{name:'FBALowestCost',index:'FBALowestCost', width:60, align:'center'}"),
+					'FBMLowestCost'   => array('colName'   => 'FBMLowestCost', 'colModel'   => "{name:'FBMLowestCost',index:'FBMLowestCost', width:60, align:'center'}"),
+				);
+				break;
+		}
+
+		$data['headers'] = $this->common->CreateColname($columns, 'colName');
+		$data['body']    = $this->common->CreateColmodel($columns, 'colModel');
+
+		$this->build_content($data);
+		$this->render_page();
+	}
+
+	function gridData() {
+
+		$page  = isset($_GET['page'])?$_GET['page']:1;// get the requested page
+		$limit = isset($_GET['rows'])?$_GET['rows']:10;// get how many rows we want to have into the grid
+		$sidx  = isset($_GET['sidx'])?$_GET['sidx']:'id';// get index row - i.e. user click to sort
+		$sord  = isset($_GET['sord'])?$_GET['sord']:'desc';// get the direction
+
+		$sku = $this->input->get('sku');
+		$cat = $this->MCatalog->getCategoryId($sku);
+
+		switch ($cat) {
+			case '60':
+				$select = "SELECT Cast(inventory.[dbo].fn_GetLowestPriceFromSuppliersTable ('{$sku}') as Decimal(10,2))  AS 'LowestCost'
+                              ,Cast(IsNull(PC.[UnitCostAvgPO],0) AS Decimal(10,2)) AS 'AvgPOCost'
+                              ,FPHVCI.[MITSKU] AS 'MITSKU'
+                              ,FPHVCI.[MICost] AS 'MITCost'
+                              ,FPHVCI.[MoldGateSKU] AS 'MgtSKU'
+                              ,FPHVCI.[MoldGateCost] AS 'MgtCost'
+                              ,FPHVCI.[GrandBulbSKU] AS 'GBSKU'
+                              ,FPHVCI.[GrandBulbCost] AS 'GBCost'
+                              ,FPHVCI.[SouthernTechSKU] AS 'STCSKU'
+                              ,FPHVCI.[SouthernTechCost] AS 'STCCost'
+                              ,FPHVCI.[KWSKU] AS 'KWSKU'
+                              ,FPHVCI.[KWCost] AS 'KWCost'
+                              ,FPHVCI.[LeaderSKU] AS 'LeaderSKU'
+                              ,FPHVCI.[LeaderCost] AS 'LeaderCost'
+                              ,FPHVCI.[YitaSKU] AS 'YitaSKU'
+                              ,FPHVCI.[YitaCost] AS 'YitaCost'
+                              ,FPHVCI.[FYVSKU] AS 'FYVSKU'
+                              ,FPHVCI.[FYVCost] AS 'FYVCost'
+                              ,FPHVCI.[LampsChoiceSKU] AS 'LampsChoiceSKU'
+                              ,FPHVCI.[LampsChoiceCost] AS 'LampsChoiceCost'
+                        FROM [Inventory].[dbo].[FP-Housing-Vendor-CostInfo] AS FPHVCI
+                        LEFT OUTER JOIN [Inventory].[dbo].[ProductCatalog] AS PC ON (FPHVCI.[MITSKU] = PC.[ID])
+                        WHERE FPHVCI.[MITSKU] = '{$sku}'";
+			break;
+
+			case '24':
+			$select = "SELECT Cast(inventory.[dbo].fn_GetLowestPriceFromSuppliersTable ('{$sku}') as Decimal(10,2)) AS 'LowestCost'
+                          ,Cast(IsNull(PC.[UnitCostAvgPO],0) AS Decimal(10,2)) AS 'AvgPOCost'
+                          ,FPGVCI.[ID] AS 'MITSKU'
+                          ,FPGVCI.[MiTechCost] AS 'MITCost'
+                          ,FPGVCI.[ArcliteSKU] AS 'ArcliteSKU'
+                          ,FPGVCI.[ArcLiteUnitCost] AS 'ArcliteCost'
+                          ,FPGVCI.[GlorySKU] AS 'GlorySKU'
+                          ,FPGVCI.[GloryUnitCost] AS 'GloryCost'
+                          ,FPGVCI.[ClpSKU] AS 'CLPSKU'
+                          ,FPGVCI.[ClpUnitCost] AS 'CLPCost'
+                          ,FPGVCI.[GrandBulbsSKU] AS 'GBSKU'
+                          ,FPGVCI.[GrandBulbsCost] AS 'GBCost'
+                          ,FPGVCI.[LeaderCoSKU] AS 'LeaderSKU'
+                          ,FPGVCI.[LeaderCoCost] AS 'LeaderCost'
+                          ,FPGVCI.[YitaSKU] AS 'YitaSKU'
+                          ,FPGVCI.[YitaCost] AS 'YitaCost'
+                          ,IsNull(PC.[UnitCostFBA],0) AS 'FBALowestCost'
+                          ,IsNull(PC.[UnitCostFBM],0) AS 'FBMLowestCost'
+                      FROM [Inventory].[dbo].[FP-Generic-Vendor-CostInfo] AS FPGVCI
+                      LEFT OUTER JOIN [Inventory].[dbo].[ProductCatalog] AS PC ON (FPGVCI.[ID] = PC.[ID])
+                      WHERE FPGVCI.[ID] = '{$sku}'";
+			break;
+
+			default:
+			$select = "SELECT Cast(PC.[UnitCost] as Decimal(10,2)) AS 'LastQuotedPrice'
+                             ,Cast(IsNull(PC.[UnitCostAvgPO],0) AS Decimal(10,2)) AS 'AvgPOCost'
+                             ,IsNull(PC.[UnitCostFBA],0) AS 'FBALowestCost'
+                             ,IsNull(PC.[UnitCostFBM],0) AS 'FBMLowestCost'
+                       FROM [Inventory].[dbo].[ProductCatalog] AS PC
+                       WHERE PC.[ID] = '{$sku}'";
+			break;
+		}
+
+		$result = $this->MCommon->getSomeRecords($select);
+
+		$count = count($result);
+
+		if ($count > 0) {
+			$total_pages = ceil($count/$limit);
+		} else {
+			$total_pages = 0;
+		}
+		if ($page > $total_pages) {
+			$page = $total_pages;
+		}
+
+		$start  = $limit*$page-$limit;// do not put $limit*($page - 1)
+		$start  = ($start <= 0)?1:$start;
+		$finish = $start+$limit;
+
+		$responce          = new stdClass();
+		$responce->page    = $page;
+		$responce->total   = $total_pages;
+		$responce->records = $count;
+
+		$i = 0;
+
+		switch ($cat) {
+			case '60':
+				foreach ($result as $row) {
+					$responce->rows[$i]['id']   = $row['LowestCost'];
+					$responce->rows[$i]['cell'] = array($row['LowestCost'],
+						$row['AvgPOCost'] = utf8_encode($row['AvgPOCost']),
+						$row['MITSKU'] = utf8_encode($row['MITSKU']),
+						$row['MITCost'] = utf8_encode($row['MITCost']),
+						$row['MgtSKU'] = utf8_encode($row['MgtSKU']),
+						$row['MgtCost'] = utf8_encode($row['MgtCost']),
+						$row['GBSKU'] = utf8_encode($row['GBSKU']),
+						$row['GBCost'] = utf8_encode($row['GBCost']),
+						$row['STCSKU'] = utf8_encode($row['STCSKU']),
+						$row['STCCost'] = utf8_encode($row['STCCost']),
+						$row['KWSKU'] = utf8_encode($row['KWSKU']),
+						$row['KWCost'] = utf8_encode($row['KWCost']),
+						$row['LeaderSKU'] = utf8_encode($row['LeaderSKU']),
+						$row['LeaderCost'] = utf8_encode($row['LeaderCost']),
+						$row['YitaSKU'] = utf8_encode($row['YitaSKU']),
+						$row['YitaCost'] = utf8_encode($row['YitaCost']),
+						$row['FYVSKU'] = utf8_encode($row['FYVSKU']),
+						$row['FYVCost'] = utf8_encode($row['FYVCost']),
+						$row['LampsChoiceSKU'] = utf8_encode($row['LampsChoiceSKU']),
+						$row['LampsChoiceCost'] = utf8_encode($row['LampsChoiceCost']),
+					);
+					$i++;
+				}
+				break;
+			case '24':
+				foreach ($result as $row) {
+					$responce->rows[$i]['id']   = $row['LowestCost'];
+					$responce->rows[$i]['cell'] = array($row['LowestCost'],
+						$row['AvgPOCost'] = utf8_encode($row['AvgPOCost']),
+						$row['MITSKU'] = utf8_encode($row['MITSKU']),
+						$row['MITCost'] = utf8_encode($row['MITCost']),
+						$row['ArcliteSKU'] = utf8_encode($row['ArcliteSKU']),
+						$row['ArcliteCost'] = utf8_encode($row['ArcliteCost']),
+						$row['GlorySKU'] = utf8_encode($row['GlorySKU']),
+						$row['GloryCost'] = utf8_encode($row['GloryCost']),
+						$row['CLPSKU'] = utf8_encode($row['CLPSKU']),
+						$row['CLPCost'] = utf8_encode($row['CLPCost']),
+						$row['GBSKU'] = utf8_encode($row['GBSKU']),
+						$row['GBCost'] = utf8_encode($row['GBCost']),
+						$row['LeaderSKU'] = utf8_encode($row['LeaderSKU']),
+						$row['LeaderCost'] = utf8_encode($row['LeaderCost']),
+						$row['YitaSKU'] = utf8_encode($row['YitaSKU']),
+						$row['YitaCost'] = utf8_encode($row['YitaCost']),
+						$row['FBALowestCost'] = utf8_encode($row['FBALowestCost']),
+						$row['FBMLowestCost'] = utf8_encode($row['FBMLowestCost']),
+
+					);
+					$i++;
+				}
+				break;
+
+			default:
+				foreach ($result as $row) {
+					$responce->rows[$i]['id']   = $row['LastQuotedPrice'];
+					$responce->rows[$i]['cell'] = array($row['LastQuotedPrice'],
+						$row['AvgPOCost'] = utf8_encode($row['AvgPOCost']),
+						$row['FBALowestCost'] = utf8_encode($row['FBALowestCost']),
+						$row['FBMLowestCost'] = utf8_encode($row['FBMLowestCost']),
+					);
+					$i++;
+				}
+				break;
+		}
+
+		echo json_encode($responce);
+	}
+
+	function csvExportHistory($name) {
+
+		header('Content-type: application/vnd.ms-excel');
+		header("Content-Disposition: attachment; filename= history_".$name.".xls");
+		header("Pragma: no-cache");
+
+		$buffer = $_POST['csvBuffer'];
+
+		try {
+			echo $buffer;
+		} catch (Exception $e) {
+
+		}
+	}
+
+}
+
+?>

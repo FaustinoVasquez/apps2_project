@@ -1,0 +1,22 @@
+BODY {
+   font: 11pt Verdana, Geneva, Arial, Helvetica, sans-serif;
+   margin: 10 0 10 0px;
+    background-color: #ffffff;
+} 
+
+label {float:left; 
+       font-weight:bold}
+#ticket {
+    width: 350px;
+    height: 200px;
+    margin-top: -35px;
+}
+.hide{display: none;}
+
+#bulidsku{float:right;
+          font-weight: bold;
+
+}
+#bcTarget{
+    margin:15px auto 0 auto;
+}

@@ -1,0 +1,259 @@
+fieldset{
+    font:80%/1 sans-serif;
+    width:auto;
+    background-color:  #ccc;
+    border: 1px solid  #339cdf;
+    margin:0px;
+}
+
+.bluegradiant {
+    background-color: #FFFFFF;
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#E1EFFB), to(#FFFFFF), color-stop(.5,#E1EFFB));
+    background: -moz-linear-gradient(top, #E1EFFB 0%, #E1EFFB 50%, #FFFFFF 100%);
+}
+
+
+.logo{
+    float:left;
+    width: 220px;
+
+}     
+.form-data{ 
+    float:left;
+    line-height:35px;
+    margin-left:30px;
+    width: 70%;
+    text-align: center;
+    color: #777;
+    font-family: Arial,Helvetica,sans-serif; 
+}
+
+.myform {
+    float:left;
+    width: 100%;
+
+}
+
+.graphicBox{
+    background-color: #ffffff;
+    border-radius: 15px;
+    -moz-border-radius: 10px;   
+    color: white;
+    box-shadow: 0 1px 0 gray;
+    -moz-box-shadow: 0 1px 1px gray;
+    -webkit-box-shadow: 0 1px 1px gray;
+
+}
+
+
+input {
+    border:1px solid #899caa;
+    border-radius:3px;
+    -moz-border-radius:5px;
+    color:#3a454d;
+    padding:2px 2px;
+
+    font-size:11px;
+    text-align: left;
+}
+
+input[disabled='disabled'] {
+ 
+    color:blue;
+    cursor:default;
+    color:black;
+}
+
+
+.button {
+    width:auto;
+    background:#339cdf url(../images/login/loginbuttonbg.png) repeat-x;
+    color:#fff;
+    padding:1px 5px 1px 5px;
+    text-shadow:0px -1px #278db8;
+    border:1px solid #339cdf;
+    box-shadow:none;
+    -moz-box-shadow:none;
+    -webkit-box-shadow:none;
+    margin:0 3px 0 0;
+    cursor:pointer;
+    *padding:7px 2px 8px 2px; /* IE7 Fix */
+}
+.button:hover {
+    background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #378de5), color-stop(1, #00cbfe) );
+    background:-moz-linear-gradient( center top, #378de5 5%, #00cbfe 100% );
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#378de5', endColorstr='#00cbfe');
+    background-color:#378de5;
+}
+
+
+.checkbox {
+    width:auto;
+    margin:1px 4px 0 0;
+    padding:0;
+    border:0;
+    *margin:-3px 9px 0 0; /* IE7 Fix */
+}
+
+label {
+    font-family: Verdana,Arial,Helvetica,sans-serif;
+    font-size: 12px;
+    color: #09548B;
+}
+
+#ui-datepicker-div { font-size:11px; }
+
+
+
+
+/* Ventana descendente (inicio)*/
+
+a.activator{
+    width:116px;
+    height:106px;
+    position:absolute;
+    top:8px;
+    left:50%;
+    margin-left:-646px;
+    background:#fff url(../images/overlay/clickme.png) no-repeat top left;
+    z-index:1;
+    cursor:pointer;
+}
+
+.overlay{
+    background:transparent url(../images/overlay/overlay.png) repeat top left;
+    position:fixed;
+    top:0px;
+    bottom:0px;
+    left:0px;
+    right:0px;
+    z-index:100;
+}
+
+.box{
+    position:fixed;
+    top:-250px;
+    left:30%;
+    right:30%;
+    background-color: skyblue;
+    color: #222222;
+    padding:20px;
+    border-radius: 7px; 
+    -moz-border-radius: 7px; 
+    -webkit-border-radius: 7px;
+    background: #fefcea; /* Old browsers */
+    /* IE9 SVG, needs conditional override of 'filter' to 'none' */
+    background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIxMyUiIHN0b3AtY29sb3I9IiNmZWZjZWEiIHN0b3Atb3BhY2l0eT0iMSIvPgogICAgPHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjZjFkYTM2IiBzdG9wLW9wYWNpdHk9IjEiLz4KICA8L2xpbmVhckdyYWRpZW50PgogIDxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9InVybCgjZ3JhZC11Y2dnLWdlbmVyYXRlZCkiIC8+Cjwvc3ZnPg==);
+    background: -moz-linear-gradient(top,  #fefcea 13%, #f1da36 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(13%,#fefcea), color-stop(100%,#f1da36)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top,  #fefcea 13%,#f1da36 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top,  #fefcea 13%,#f1da36 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top,  #fefcea 13%,#f1da36 100%); /* IE10+ */
+    background: linear-gradient(to bottom,  #fefcea 13%,#f1da36 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fefcea', endColorstr='#f1da36',GradientType=0 ); /* IE6-8 */
+    border: 2px solid #495280;
+    z-index:101;
+}
+.box p{
+
+    font-size: 14px;
+    font-weight: normal;
+    margin-bottom: 20px;
+}
+
+.box table{
+    font-size: 14px;
+    font-weight: bold;
+
+
+}
+
+a.boxclose{
+    float:right;
+    width:26px;
+    height:26px;
+    background:transparent url(../images/overlay/cancel.png) repeat top left;
+    margin-top:-30px;
+    margin-right:-30px;
+    cursor:pointer;
+}
+
+
+#paidfull{
+    width:200px;
+}
+#tpaidfull{
+    width:150px;
+    background-color: #49F574;
+    text-align: right;
+}
+
+#balancedue{
+    width:200px; 
+}
+#tbalancedue{
+    width:150px;
+    background-color:#D11D20; 
+    color:white;
+    text-align: right;
+}
+#creditdue{
+    width:200px;
+}
+
+#tcreditdue{
+    width:150px;
+    background-color: #F5F249;
+    text-align: right;
+}
+/* Ventana descendente (fin)*/
+
+/* Estilos para los graficos(Inicio)*/
+
+.graphicFrame{
+  width:550px;
+  height:355px;
+  border-width:0px;  
+
+}
+.gap{
+    padding-top:40px;
+    width: 100%;
+}
+
+
+.graphicContainter{
+    margin-left: 13px;
+    width: 524px; 
+    height: 344px; 
+    float:left;
+    background-color:#FFFFFF;       
+    border-radius: 15px;
+    -moz-border-radius: 10px;   
+    color: white;
+    box-shadow: 1px 2px 1px  #3a454d;
+    -moz-box-shadow: 1px 2px 1px  #3a454d;
+    -webkit-box-shadow: 1px 2px 1px  #3a454d;
+    border: 1px solid #ccc;
+}
+.graphicContainter select {
+    font-size: 10px;
+}
+
+.graphic{
+   width: 520px; 
+   height: 320px; 
+   float:left;
+   margin-left:3px;
+    
+}
+
+/* Estilos para los graficos(fin)*/
+
+div.centered {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    margin-top: -50px;
+    margin-left: -100px;
+}

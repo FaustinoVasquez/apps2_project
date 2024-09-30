@@ -1,0 +1,270 @@
+<?php
+
+if (!defined('BASEPATH'))
+    exit('No direct script access allowed');
+
+class Pricemanagement extends BP_Controller {
+
+    public function __construct() {
+        parent::__construct();
+
+        $is_logged_in = $this->session->userdata('is_logged_in');
+
+        if (!isset($is_logged_in) || $is_logged_in != true) {
+            redirect(base_url(), 'refresh');
+        }
+        
+        if ($this->MUsers->isValidUser($this->session->userdata('userid'), 884055) != 1) {
+               redirect('Catalog/prodcat', 'refresh');
+           }
+    }
+
+    public function index() {
+        //Cargamos la base de datos de OrderManager
+        $this->load->model('MOrders', '', TRUE);
+
+        // Define Meta
+        $this->title = "MI Technologiesinc - Price Management";
+
+        $this->description = "Price Management";
+
+        // Define custom CSS
+        $this->css = array('menu.css', 'fluid.css', 'jqueryui/redmond/jquery-ui-1.8.21.custom.css', 'jqgrid/ui.jqgrid.css', 'form.css');
+
+        // Define custom javascript
+        $this->javascript = array('jqueryui/ui/jquery-ui-1.8.21.custom.js', 'jqgrid/i18n/grid.locale-en.js', 'jqgrid/jquery.jqGrid.min.js', 'jqgrid/jquery.jqGrid.fluid.js', 'popup.js');
+        //Cargamos la libreria donde esta el menu
+        $this->load->library('Layout');
+        //Creamos un nuevo layout->menu
+        $menu = new Layout;
+
+        $data = array(
+            'menu' => $menu->show_menu($this->MUsers->getUserFullName($this->session->userdata('userid'))),
+            'from' => '/tools/pricemanagement/',
+            'nameGrid' => 'pricemanagement',
+            'namePager' => 'pricemanagementpager',
+            'caption' => 'Price Management',
+            'sort' => 'desc',
+            'search' => '',
+            'categoriesOptions' => $this->MCatalog->fillCategories('Categories'),
+	    'categories' => '0',
+            'productLineOptions' => $this->MCatalog->fillProductLines('Product Lines'),
+            'productLines' => '0',
+            'export' => 'Pricemanagement',
+            'customerid' => $this->MUsers->getCustomerId($this->session->userdata('userid')),
+            'selectedcart' => 0,
+            'breakdown'=>''
+            
+        );
+
+        
+        //Cargamos la libreria comumn
+        $this->load->library('common');
+
+        //Reemplazamos los campos del formulario por los que estan en el arreglo $_POST.
+        $data = $this->common->fillPost('ALL', $data);
+        
+        
+        $data['colNames'] = "['SKU','Manufacturer','ManufacturerPN','CategoryID','ProductLineID','Name','tQOH','AlwaysInStock','PriceFloor','PriceFloorFBA','PriceFloorMFP','PriceCeiling','PriceCeilingFBA','PriceCeilingMFP']";
+        //Cargamos al arreglo los colmodels
+        $data['colModel'] = "[
+                {name:'SKU',index:'SKU', width:50, align:'center',formatter: formatLink},
+                {name:'Manufacturer',index:'Manufacturer', width:70, align:'left'},
+                {name:'ManufacturerPN',index:'ManufacturerPN', width:70, align:'left'},
+                {name:'CategoryID',index:'CategoryID', width:55, align:'center'},
+                {name:'ProductLineID',index:'ProductLineID', width:55, align:'center'},
+                {name:'Name',index:'Name', width:130, align:'left'},
+		        {name:'TotalStock',index:'TotalStock', width:55, align:'center', formatter:'number', formatoptions:{decimalSeparator:'.',thousandsSeparator: ',', decimalPlaces: 2, prefix: '' }},
+                {name:'AlwaysInStock',index:'AlwaysInStock', width:55, align:'center',editable:true,  edittype: 'checkbox', editoptions: { value: '1:0' }, formatter: 'checkbox', formatoptions: { disabled: true} },
+                {name:'PriceFloor',index:'PriceFloor', width:55, align:'center', editable:true,editrules:{number:true}},
+		        {name:'PriceFloorFBA',index:'PriceFloorFBA', width:55, align:'center', editable:true,editrules:{number:true} },
+		        {name:'PriceFloorMFP',index:'PriceFloorMFP', width:55, align:'center', editable:true,editrules:{number:true} },
+                {name:'PriceCeiling',index:'PriceCeiling', width:55, align:'center', editable:true,editrules:{number:true}},
+		        {name:'PriceCeilingFBA',index:'PriceCeilingFBA', width:55, align:'center', editable:true,editrules:{number:true}},
+		        {name:'PriceCeilingMFP',index:'PriceCeilingMFP', width:55, align:'center', editable:true,editrules:{number:true}},
+ 
+  	]";
+ 
+ 
+        //cadena de busqueda del grid 
+        $data['gridSearch'] = 'getData?ds=' . $data['search'].'&ct='.$data['categories'].'&pl='.$data['productLines'];
+        
+
+        //Generar el contenido....
+        $this->build_content($data);
+        $this->render_page();
+    }
+
+    function getData() {
+        $page = isset($_REQUEST['page']) ? $_REQUEST['page'] : 1; // get the requested page
+        $limit = isset($_REQUEST['rows']) ? $_REQUEST['rows'] : 10; // get how many rows we want to have into the gri
+        $sidx = isset($_REQUEST['sidx']) ? $_REQUEST['sidx'] : 'ID'; // get index row - i.e. user click to sort
+        $sord = isset($_REQUEST['sord']) ? $_REQUEST['sord'] : 'desc';
+
+        $dataSearch = isset($_REQUEST['ds']) ? $_GET['ds'] : '';
+        $categories = !empty($_GET['ct']) ? $_REQUEST['ct'] : 0;
+        $productline = !empty($_GET['pl']) ? $_REQUEST['pl'] : 0;
+        
+	
+       $where = '';
+       
+	
+       $select = 'SELECT PC.[ID] AS [SKU]
+                        ,PC.[Manufacturer]
+                        ,PC.[ManufacturerPN]
+                        ,PC.[CategoryID]
+                        ,PC.[ProductLineID]
+                        ,PC.[Name]
+                        ,GS.[TotalStock]
+                        ,PC.[AlwaysInStock]
+                        ,PC.[PriceFloor]
+			            ,PC.[PriceFloorFBA]
+			            ,PC.[PriceFloorMFP]
+                        ,PC.[PriceCeiling]
+  			            ,PC.[PriceCeilingFBA]
+  			            ,PC.[PriceCeilingMFP]';
+        $from = ' from ';
+        $table=' [Inventory].[dbo].[ProductCatalog] as PC ';
+        $join=' LEFT OUTER JOIN [inventory].[dbo].global_stocks AS GS ON (PC.ID = GS.ProductCatalogID) ';
+
+        $wherefields = array('PC.ID','PC.Manufacturer','PC.ManufacturerPN','PC.CategoryID','PC.ProductLineID','PC.Name','PC.AlwaysInStock','PC.PriceFloor','PC.PriceFloorFBA','PC.PriceCeiling','PC.PriceCeilingFBA');
+
+        $where .=$this->MCommon->concatAllWerefields($wherefields, $dataSearch);
+        
+        if ($categories != 0){
+	    $where .= " AND (PC.[CategoryID] = {$categories})";
+	}
+        
+        if ($productline != 0){
+	    $where .= " AND (PC.[ProductLineID] = {$productline})";
+	}
+       
+        
+        $SQL = "{$select}{$from}{$table}{$join}{$where}";
+
+
+      
+        $result = $this->MCommon->getSomeRecords($SQL);
+
+        $count = count($result);
+
+
+        if ($count > 0) {
+            $total_pages = ceil($count / $limit);
+        } else {
+            $total_pages = 0;
+        }
+        if ($page > $total_pages)
+            $page = $total_pages;
+
+        $start = $limit * $page - $limit; // do not put $limit*($page - 1)
+        $start = ($start < 0) ? 0 : $start;
+        $finish = $start + $limit;
+
+
+        $responce = new stdClass();
+        $responce->page = $page;
+        $responce->total = $total_pages;
+        $responce->records = $count;
+        $i = 0;
+
+        foreach ($result as $row) {
+            $responce->rows[$i]['id'] = $row['SKU'];
+            $responce->rows[$i]['cell'] = array($row['SKU'],
+                $row['Manufacturer'] = utf8_encode($row['Manufacturer']),
+                $row['ManufacturerPN']=utf8_encode($row['ManufacturerPN']),
+                $row['CategoryID']=utf8_encode($row['CategoryID']),
+                $row['ProductLineID']=utf8_encode($row['ProductLineID']),
+                $row['Name']=utf8_encode($row['Name']),
+                $row['TotalStock']=utf8_encode($row['TotalStock']),
+		        $row['AlwaysInStock']=utf8_encode($row['AlwaysInStock']),
+                $row['PriceFloor']=utf8_encode($row['PriceFloor']),
+ 		        $row['PriceFloorFBA']=utf8_encode($row['PriceFloorFBA']),
+ 		        $row['PriceFloorMFP']=utf8_encode($row['PriceFloorMFP']),
+		        $row['PriceCeiling']=utf8_encode($row['PriceCeiling']),
+		        $row['PriceCeilingFBA']=utf8_encode($row['PriceCeilingFBA']),
+		        $row['PriceCeilingMFP']=utf8_encode($row['PriceCeilingMFP']),
+            );
+            $i++;
+        }
+
+        echo json_encode($responce);
+    }
+    
+    
+     function saveData() {
+          
+          $id = $_POST['id'];
+          
+          if (isset($_POST['UnitCost'])) {
+               $UnitCost = $_POST['UnitCost'];
+               $SQL = "update inventory.dbo.ProductCatalog set UnitCost='{$UnitCost}' where id={$id}";
+          }
+
+          if (isset($_POST['AlwaysInStock'])) {
+               $AlwaysInStock = $_POST['AlwaysInStock'];
+               $SQL = "update inventory.dbo.ProductCatalog set AlwaysInStock={$AlwaysInStock} where id={$id}";
+          }
+
+          if (isset($_POST['PriceFloor'])) {
+               $PriceFloor = $_POST['PriceFloor'];
+               $SQL = "update inventory.dbo.ProductCatalog set PriceFloor={$PriceFloor} where id={$id}";
+          }
+          
+          if (isset($_POST['PriceFloorFBA'])) {
+               $PriceFloorFBA = $_POST['PriceFloorFBA'];
+               $SQL = "update inventory.dbo.ProductCatalog set PriceFloorFBA={$PriceFloorFBA} where id={$id}";
+          }
+
+	      if (isset($_POST['PriceFloorMFP'])) {
+            	$PriceFloorMFP = $_POST['PriceFloorMFP'];
+               	$SQL = "update inventory.dbo.ProductCatalog set PriceFloorMFP={$PriceFloorMFP} where id={$id}";
+          }
+
+          if (isset($_POST['PriceCeiling'])) {
+               $PriceCeiling = $_POST['PriceCeiling'];
+               $SQL = "update inventory.dbo.ProductCatalog set PriceCeiling={$PriceCeiling} where id={$id}";
+          }
+	
+          if (isset($_POST['PriceCeilingFBA'])) {
+               $PriceCeilingFBA = $_POST['PriceCeilingFBA'];
+               $SQL = "update inventory.dbo.ProductCatalog set PriceCeilingFBA={$PriceCeilingFBA} where id={$id}";
+          }
+
+         if (isset($_POST['PriceCeilingMFP'])) {
+             $PriceCeilingMFP = $_POST['PriceCeilingMFP'];
+             $SQL = "update inventory.dbo.ProductCatalog set PriceCeilingMFP={$PriceCeilingMFP} where id={$id}";
+         }
+
+
+          $this->MCommon->saveRecord($SQL,Inventory);
+     }
+    
+    
+    /*
+     * CSV Export
+     */
+
+    function csvExport($name) {
+
+        header('Content-type: application/vnd.ms-excel');
+        header("Content-Disposition: attachment; filename=" . $name . '_' . date("D-M-j") . ".xls");
+        header("Pragma: no-cache");
+
+        $buffer = $_POST['csvBuffer'];
+
+        try {
+            echo $buffer;
+        } catch (Exception $e) {
+            
+        }
+    }
+
+   
+
+}
+?>
+
+
+
+
