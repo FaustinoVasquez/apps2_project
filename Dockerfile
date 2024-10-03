@@ -41,3 +41,12 @@ RUN a2enmod rewrite
 
 # Copiar el archivo de configuración de Apache
 COPY ./apache2/apache-config.conf /etc/apache2/sites-available/000-default.conf
+
+# Copiar la aplicación apps2 al directorio /var/www/html
+COPY ./apps2 /var/www/html
+
+# Establecer el directorio de trabajo
+WORKDIR /var/www/html
+
+# Comando para iniciar Apache en primer plano
+CMD ["apache2-foreground"]

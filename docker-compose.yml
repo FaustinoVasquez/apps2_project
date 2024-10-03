@@ -8,3 +8,4 @@ services:
       - ./apps2:/var/www/html # Monta el directorio local ./apps2 en /var/www/html en el contenedor
     environment:
       - APACHE_DOCUMENT_ROOT=/var/www/html
+    restart: always # Reinicia el contenedor automáticamente
