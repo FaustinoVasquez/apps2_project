@@ -26,8 +26,12 @@ RUN ln -s /usr/lib/x86_64-linux-gnu/libsybdb.so /usr/lib/libsybdb.so
 COPY ./freetds/odbc.ini /etc/odbc.ini
 COPY ./freetds/freetds.ini /etc/freetds/freetds.conf
 
-# Configurar la zona horaria en php.ini
-RUN echo "date.timezone = America/Tijuana" > /usr/local/etc/php/conf.d/timezone.ini
+# Configurar la zona horaria y otros parámetros en php.ini
+RUN echo "date.timezone = America/Tijuana" > /usr/local/etc/php/conf.d/timezone.ini && \
+    echo "memory_limit = 4096M" > /usr/local/etc/php/conf.d/memory-limit.ini && \
+    echo "max_execution_time = 650" > /usr/local/etc/php/conf.d/max-execution-time.ini && \
+    echo "upload_max_filesize = 20M" > /usr/local/etc/php/conf.d/upload-max-filesize.ini && \
+    echo "post_max_size = 20M" > /usr/local/etc/php/conf.d/post-max-size.ini
 
 # Instalar y habilitar la extensión mssql
 RUN docker-php-ext-configure mssql --with-mssql=/usr && \

@@ -1,12 +1,10 @@
 <?php
-$dsn = 'dblib:host=192.168.0.236;dbname=inventory';
-$username = 'tempuser';
-$password = 'pLa13t1B';
+$myServer = "192.168.0.236";
+$myUser = "sistema";
+$myPass = "Z91bM4";
+$myDB = "inventory";
 
-try {
-    $dbh = new PDO($dsn, $username, $password);
-    echo "Connected to the database successfully!";
-} catch (PDOException $e) {
-    echo "Connection failed: " . $e->getMessage();
-}
+$dbhandle = mssql_connect($myServer, $myUser, $myPass)
+      or die("Couldn't connect to SQL Server on $myServer" . mssql_get_last_message());
 ?>
+

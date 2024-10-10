@@ -19,8 +19,8 @@
 //$config['base_url']	= 'http://192.168.115.128'; 
 
 //FOR PRODUCTION.
-// $config['base_url']	= 'http://apps2.mitechnologiesinc.com';
-$config['base_url']	= 'http://localhost:8082';
+$config['base_url']	= 'http://apps2.mitechnologiesinc.com';
+//$config['base_url']	= 'http://localhost:8082';
 /*
 |--------------------------------------------------------------------------
 | Index File
@@ -31,7 +31,7 @@ $config['base_url']	= 'http://localhost:8082';
 | variable so that it is blank.
 |
 */
-$config['index_page'] = '';
+$config['index_page'] = 'index.php';
 
 /*
 |--------------------------------------------------------------------------
@@ -49,7 +49,7 @@ $config['index_page'] = '';
 | 'ORIG_PATH_INFO'	Uses the ORIG_PATH_INFO
 |
 */
-$config['uri_protocol']	= 'AUTO';
+$config['uri_protocol']	= 'PATH_INFO';
 
 /*
 |--------------------------------------------------------------------------
