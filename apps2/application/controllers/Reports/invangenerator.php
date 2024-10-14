@@ -389,8 +389,7 @@ class Invangenerator extends BP_Controller {
         // mssql_execute($stmt);
         // mssql_free_statement($stmt);
 
-
-        $scriptFolder = '/var/www/html/apps2/application/shellscript/sql.sh';
+        $scriptFolder = '/var/www/html/application/shellscript/sql.sh';
         $command = $scriptFolder." ".$categoryId." ".$targetDays." ".$userId." &>/dev/null &";
        // echo $command;
         $command = escapeshellcmd ($command);
